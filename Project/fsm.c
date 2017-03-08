@@ -1,53 +1,16 @@
 #include <unistd.h>
+#include <pthread.h>
+#include "dataStructures.h"
+#include "elev.h"
 #include "timer.h"
 #include "orders.h"
 #include "main.h"
-#include "dataStructures.h"
 #include "fsm.h"
 #define OPEN_DOOR_DURATION 3
 #define FSM_EVENT_LISTENER_INTERVAL 50
 
-static int previousFloorIndicator
+static int previousFloorIndicator;
 static elevator e;
-
-void *eventListener(){
-	while(true){
-		fsm_checkForNewOrders();
-		if(elev_get_floor_sensor_signal() != previousFloorIndicator){
-			previousFloorIndicator = elev_get_floor_sensor_signal()
-			if(previousFloorIndicator != -1){
-				fsm_arrivalAtFloor(previousFloorIndicator);
-			}
-		}
-		if(timer_timedOut()){
-			fsm_timeOut();
-			timer_stop();
-		}
-		usleep(FSM_EVENT_LISTENER_INTERVAL * 1000);
-	}
-}
-
-
-void fsm_arrivalAtFloor(int floor){
-	e.floor = floor;
-	elev_set_floor_indicator(floor);
-	switch(e.state){
-	case MOVING:
-		if(orders_shouldStop(e.dir, e.floor)){
-			e.dir = DIRN_STOP;
-			elev_set_motor_direction(e.dir);
-			elev_set_door_open_lamp(true);
-			timer_start(OPEN_DOOR_DURATION);
-			main_clearOrders(floor);
-			e.state = DOOR_OPEN;
-			break;
-		}
-		break;
-	
-	default:
-		break;
-	}
-}
 
 void fsm_timeOut(){
 	switch(e.state){
@@ -77,7 +40,7 @@ void fsm_checkForNewOrders(){
 				elev_set_motor_direction(e.dir);
 				elev_set_door_open_lamp(true);
 				timer_start(OPEN_DOOR_DURATION);
-				main_clearOrders(floor);
+				main_clearOrders(e.floor);
 				e.state = DOOR_OPEN;
 			}
 			break;
@@ -88,6 +51,44 @@ void fsm_checkForNewOrders(){
 	
 	default:
 		break;
+	}
+}
+
+void fsm_arrivalAtFloor(int floor){
+	e.floor = floor;
+	elev_set_floor_indicator(floor);
+	switch(e.state){
+	case MOVING:
+		if(orders_shouldStop(e.dir, e.floor)){
+			e.dir = DIRN_STOP;
+			elev_set_motor_direction(e.dir);
+			elev_set_door_open_lamp(true);
+			timer_start(OPEN_DOOR_DURATION);
+			main_clearOrders(floor);
+			e.state = DOOR_OPEN;
+			break;
+		}
+		break;
+	
+	default:
+		break;
+	}
+}
+
+void *eventListener(){
+	while(true){
+		fsm_checkForNewOrders();
+		if(elev_get_floor_sensor_signal() != previousFloorIndicator){
+			previousFloorIndicator = elev_get_floor_sensor_signal();
+			if(previousFloorIndicator != -1){
+				fsm_arrivalAtFloor(previousFloorIndicator);
+			}
+		}
+		if(timer_timedOut()){
+			fsm_timeOut();
+			timer_stop();
+		}
+		usleep(FSM_EVENT_LISTENER_INTERVAL * 1000);
 	}
 }
 

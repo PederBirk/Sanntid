@@ -1,6 +1,10 @@
-#include "elev.h"
-
 typedef enum { false, true } bool;
+
+typedef enum tag_elev_lamp_type { 
+    BUTTON_CALL_UP = 0,
+    BUTTON_CALL_DOWN = 1,
+    BUTTON_COMMAND = 2
+} ButtonType;
 
 typedef struct{
 	int floor;
@@ -24,8 +28,3 @@ typedef enum tag_elev_motor_direction {
     DIRN_UP = 1
 } MotorDir;
 
-typedef enum tag_elev_lamp_type { 
-    BUTTON_CALL_UP = 0,
-    BUTTON_CALL_DOWN = 1,
-    BUTTON_COMMAND = 2
-} ButtonType;

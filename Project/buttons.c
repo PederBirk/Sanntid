@@ -1,11 +1,20 @@
 #include <pthread.h>
+#include "dataStructures.h"
 #include "elev.h"
 #include "main.h"
-#include "dataStructures.h"
+#include "buttons.h"
 #include <unistd.h>
 #define BUTTONS_LISTENER_INTERVAL 50
 
 static bool previousButtonStates[N_FLOORS][N_BUTTONS];
+
+bool readButton(int floor, ButtonType button){ //Only returns true when button goes from unpressed to pressed
+	if(elev_get_button_signal(button, floor) != previousButtonStates[floor][button]){
+		previousButtonStates[floor][button] = elev_get_button_signal(button, floor);
+		return previousButtonStates[floor][button];
+	}
+	return false;
+}
 
 void *buttonListener(){
 	while(true){
@@ -21,14 +30,6 @@ void *buttonListener(){
 		}
 		usleep(BUTTONS_LISTENER_INTERVAL * 1000);
 	}
-}
-
-bool readButton(int floor, ButtonType button){ //Only returns true when button goes from unpressed to pressed
-	if(elev_get_button_signal(button, floor) != previousButtonStates[floor][button]){
-		previousButtonStates[floor][button] = elev_get_button_signal(button, floor);
-		return previousButtonStates[floor][button];
-	}
-	return false;
 }
 
 void buttons_init(){

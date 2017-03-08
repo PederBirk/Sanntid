@@ -1,6 +1,6 @@
-#include "buttons.h"
 #include "dataStructures.h"
 #include "elev.h"
+#include "buttons.h"
 #include "orders.h"
 #include "fsm.h"
 
@@ -30,7 +30,7 @@ int main(){
 	fsm_init(false);
 	orders_init();
 	buttons_init(); //Order matters here: Make sure buttons is last
-	while true{
+	while (true){
 		//aint doin shiet;
 	}
 }

@@ -8,8 +8,6 @@
 // Number of buttons (and corresponding lamps) on a per-floor basis
 #define N_BUTTONS 3
 
-#include "dataStructures.h"
-
 void elev_init(void);
 
 void elev_set_motor_direction(MotorDir dirn);
