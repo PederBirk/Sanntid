@@ -4,8 +4,9 @@
 #include "timer.h"
 #include <pthread.h>
 #include <unistd.h>
+#include <stdio.h>
 #define CHECK_FOR_ORDER_TIMEOUT_INTERVAL 2
-#define ORDER_TIMEOUT 60
+#define ORDER_TIMEOUT 5
 
 static Order orders[N_FLOORS][N_BUTTONS];
 
@@ -30,7 +31,7 @@ bool orders_orderOnFloor(int floor){
 	return false;
 }
 
-bool orders_addOrder(ButtonPress b, OrderState state){ //Returns wether or not orders was changed
+bool orders_addOrder(ButtonPress b, OrderState state){ //Returns wether  or not orders was changed
 	switch(state){
 	case LOCAL:
 		switch((orders[b.floor][b.button]).state){
@@ -112,7 +113,7 @@ bool orders_shouldStop(MotorDir dir, int floor){
 		return (orders[floor][BUTTON_CALL_UP]).state == LOCAL;
 	
 	case DIRN_DOWN:
-		return (orders[floor][BUTTON_CALL_UP]).state == LOCAL;
+		return (orders[floor][BUTTON_CALL_DOWN]).state == LOCAL;
 
 	default: return true; //Always return true to be safe.
 	}
@@ -152,9 +153,10 @@ void *checkOrderTimeout(){
 				if(((orders[floor][button]).timeOut != 0) && ((orders[floor][button]).timeOut < currentTime)){
 					if((orders[floor][button]).state == LOCAL){
 						//something's fucky -_-
-						continue;
+						//printf("Local order timed out\n")
 					}
 					(orders[floor][button]).state = LOCAL;
+					//printf("order timed out\n");
 				}
 			}
 		}

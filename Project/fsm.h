@@ -9,7 +9,7 @@ typedef enum{
 typedef struct{
 	fsmState state;
 	int floor;
-	MotorDir dir
+	MotorDir dir;
 }elevator;
 
 void fsm_init(bool skipStartup);

@@ -1,5 +1,6 @@
 
 
+#include "dataStructures.h"
 #include "elev.h"
 
 #include "channels.h"
