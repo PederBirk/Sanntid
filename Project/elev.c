@@ -1,5 +1,5 @@
 
-
+#include "config.h"
 #include "dataStructures.h"
 #include "elev.h"
 

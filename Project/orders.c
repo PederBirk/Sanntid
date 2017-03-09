@@ -5,22 +5,10 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <stdio.h>
-#define CHECK_FOR_ORDER_TIMEOUT_INTERVAL 2
-#define ORDER_TIMEOUT 5
+#include "config.h"
+
 
 static Order orders[N_FLOORS][N_BUTTONS];
-
-/*bool orders_orderExists(Order o){ //OLD AND NOT IN USE
-	if((orders[o.floor][o.button]).state != NONE){
-		return true;
-	}
-	if(o.button == BUTTON_COMMAND){
-		return ((orders[o.floor][BUTTON_CALL_UP]).state != NONE) && ((orders[o.floor][BUTTON_CALL_DOWN]).state != NONE);
-	}
-	else{
-		return (orders[o.floor][BUTTON_COMMAND]).state != NONE;
-	}
-}*/
 
 bool orders_orderOnFloor(int floor){
 	for (int button = 0; button < N_BUTTONS; button++){
@@ -175,3 +163,19 @@ void orders_init(){
 	pthread_create(&checkOrderTimeoutThread, NULL, checkOrderTimeout, NULL);
 }
 
+int orders_calculateCost(ButtonPress b){ //could be more optimal, but meh :)
+	int cost = 0;
+	for(int floor = 0; floor < N_FLOORS; floor++){
+		for(int button = 0; button < N_BUTTONS; button++){
+			if((orders[floor][button]).state == LOCAL){
+				cost += 2;
+			}
+		}
+	}
+	for(int button = 0; button < N_BUTTONS; button++){
+		if((orders[b.floor][button]).state == LOCAL){
+			cost /= 2;
+		}
+	}
+	return cost;
+}

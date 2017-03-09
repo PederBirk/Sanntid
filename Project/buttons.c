@@ -4,12 +4,14 @@
 #include "main.h"
 #include "buttons.h"
 #include <unistd.h>
-#define BUTTONS_LISTENER_INTERVAL 50
+#include "config.h"
+#include <stdio.h>
+
 
 static bool previousButtonStates[N_FLOORS][N_BUTTONS];
 
 bool readButton(int floor, ButtonType button){ //Only returns true when button goes from unpressed to pressed
-	if(elev_get_button_signal(button, floor) != previousButtonStates[floor][button]){
+	if(elev_get_button_signal(button, floor) != previousButtonStates[floor][button]){  
 		previousButtonStates[floor][button] = elev_get_button_signal(button, floor);
 		return previousButtonStates[floor][button];
 	}
@@ -20,11 +22,14 @@ void *buttonListener(){
 	while(true){
 		for(int floor = 0; floor < N_FLOORS; floor++){
 			for(int button = 0; button < N_BUTTONS; button++){
+				if(elev_get_button_signal(button, floor)){
+					printf("noe\n");
+				}
 				if(readButton(floor, button)){
 					ButtonPress b;
 					b.floor = floor;
 					b.button = button;
-					main_handleOrder(b);
+					main_handleOrder(b, GLOBAL);
 				}
 			}
 		}
