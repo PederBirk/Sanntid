@@ -73,7 +73,7 @@ void *checkCostTimeout(){
 }
 
 void cost_init(){
-	for(int floor = 0; floor < N_FLOORS; floor++){
+	for(int floor = 0; floor < N_FLOORS - 1; floor++){
 		for(int button = 0; button < N_BUTTONS; button++){
 			ButtonPress b;
 			b.floor = floor;

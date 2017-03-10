@@ -29,7 +29,7 @@ void *buttonListener(){
 					ButtonPress b;
 					b.floor = floor;
 					b.button = button;
-					main_handleOrder(b, GLOBAL);
+					main_handleOrder(b, NONE);
 				}
 			}
 		}

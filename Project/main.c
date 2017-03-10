@@ -19,13 +19,17 @@ void main_shareOrder(ButtonPress b){
 
 void main_handleOrder(ButtonPress b, OrderState state){
 	if(b.button == BUTTON_COMMAND){
-		state = LOCAL;
+		orders_addOrder(b, LOCAL);
+		return;
 	}
-
-	elev_set_button_lamp(b.button, b.floor, true);
-	if(orders_addOrder(b, state) && state == GLOBAL){
-		main_shareOrder(b);
+	if(sate == NONE){
+		elev_set_button_lamp(b.button, b.floor, true);
+		if(orders_addOrder(b, GLOBAL)){
+			main_shareOrder(b);
+		}
+		return;
 	}
+	orders_addOrder(b, state);
 }
 
 void main_clearOrders(int floor){

@@ -16,6 +16,7 @@ void udpListener(const char * ip, char * data, int dataLength){
 		ButtonPress b;
 		b.floor = data[1];
 		b.button = data[2];
+		main_handleOrder(b, GLOBAL);
 		network_sendCost(orders_calculateCost(b), b ,ip);
 	}
 	if(keyword == DELEGATE_ORDER_KEYWORD){
