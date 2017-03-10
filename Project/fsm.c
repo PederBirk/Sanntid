@@ -62,10 +62,12 @@ void fsm_arrivalAtFloor(int floor){
 		if(orders_shouldStop(e.dir, e.floor)){
 			e.dir = DIRN_STOP;
 			elev_set_motor_direction(e.dir);
-			elev_set_door_open_lamp(true);
-			timer_start(OPEN_DOOR_DURATION);
-			main_clearOrders(floor);
-			e.state = DOOR_OPEN;
+			if(orders_orderOnFloor(e.floor)){
+				elev_set_door_open_lamp(true);
+				timer_start(OPEN_DOOR_DURATION);
+				main_clearOrders(floor);
+				e.state = DOOR_OPEN;
+			}
 			break;
 		}
 		break;
