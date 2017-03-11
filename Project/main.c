@@ -8,15 +8,6 @@
 #include "network.h"
 #include <stdio.h>
 
-const char *ips[N_ELEVATORS - 1] = {"129.241.187.154"};
-
-void main_shareOrder(ButtonPress b){
-	cost_newOrder(b);
-	for(int i = 0; i < N_ELEVATORS - 1; i++){
-		network_sendRequestCost(b, ips[i]);
-	}
-}
-
 void main_handleOrder(ButtonPress b, OrderState state){
 	if(b.button == BUTTON_COMMAND){
 		elev_set_button_lamp(b.button, b.floor, true);
@@ -26,7 +17,8 @@ void main_handleOrder(ButtonPress b, OrderState state){
 	if(state == NONE){
 		elev_set_button_lamp(b.button, b.floor, true);
 		if(orders_addOrder(b, GLOBAL)){
-			main_shareOrder(b);
+			cost_newOrder(b);
+			network_sendRequestCost(b);
 		}
 		return;
 	}

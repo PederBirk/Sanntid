@@ -13,6 +13,9 @@
 PendingCosts * first;
 pthread_mutex_t costMutex = PTHREAD_MUTEX_INITIALIZER;
 
+//Warning: might trigger c++ PTSD
+//Here be linked lists. Ye be warned!
+
 void cost_newOrder(ButtonPress b){
 	PendingCosts *p = malloc(sizeof(PendingCosts));
 	p->timeOut = timer_getTime() + COST_TIMEOUT;
@@ -25,7 +28,7 @@ void cost_newOrder(ButtonPress b){
 }
 
 
-void cost_handleCost(int cost, ButtonPress b, const char * ip){
+void cost_handleCost(int cost, ButtonPress b, int ip){
 	PendingCosts *p = first;
 	while(p != NULL){
 		if(p->b == b){
@@ -46,14 +49,14 @@ void *checkCostTimeout(){
 		while(p != NULL){
 			if(p->timeOut < currentTime){
 				int lowestCost = p->costs[0].cost;
-				char * returnIp = 0;
+				int returnIp = -1;
 				for(int i = 1; i < N_ELEVATORS; i++){
 					if(p->costs[i].cost < lowestCost){
 						lowestCost = p->costs[i].cost;
 						returnIp = p->costs[i].ip;
 					}
 				}
-				if(returnIp != 0){
+				if(returnIp != -1){
 					network_sendDelegateOrder(p->b, returnIp);
 					clearPendingCosts(p->b);
 				}

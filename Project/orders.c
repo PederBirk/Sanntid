@@ -49,14 +49,10 @@ bool orders_addOrder(ButtonPress b, OrderState state){ //Returns wether  or not 
 	}
 }
 
-static void clearOrder(int floor, ButtonType button){
-	(orders[floor][button]).state = NONE;
-	(orders[floor][button]).timeOut = 0;
-}
-
 void orders_clearOrders(int floor, bool clearCommand){
 	for (int button = 0; button < N_BUTTONS - (!clearCommand); button++){
-		clearOrder(floor, button);
+		(orders[floor][button]).state = NONE;
+		(orders[floor][button]).timeOut = 0;
 	}
 }
 
@@ -156,7 +152,8 @@ void *checkOrderTimeout(){
 void orders_init(){
 	for(int floor = 0; floor < N_FLOORS; floor++){
 		for(int button = 0; button < N_BUTTONS; button++){
-			clearOrder(floor, button);
+			(orders[floor][button]).state = NONE;
+			(orders[floor][button]).timeOut = 0;
 		}
 	}
 	pthread_t checkOrderTimeoutThread;

@@ -1,3 +1,4 @@
+#pragma once
 typedef enum { false, true } bool;
 
 typedef enum tag_elev_lamp_type { 

@@ -1,6 +1,7 @@
+#pragma once
 typedef struct{
 	int cost;
-	const char * ip;
+	int ip;
 } CostIp;
 
 typedef struct{
@@ -11,6 +12,6 @@ typedef struct{
 	PendingCosts *next;
 } PendingCosts;
 
-void cost_handleCost(int cost, ButtonPress b, const char * ip);
+void cost_handleCost(int cost, ButtonPress b,int ip);
 void cost_newOrder(ButtonPress b);
 void cost_init();

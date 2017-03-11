@@ -30,7 +30,7 @@ void fsm_timeOut(){
 	}
 }
 
-void fsm_checkForNewOrders(){
+void fsm_update(){
 	switch(e.state){
 	case IDLE:
 		e.dir = orders_getDirection(e.floor, e.dir);
@@ -86,7 +86,7 @@ void fsm_arrivalAtFloor(int floor){
 
 void *eventListener(){
 	while(true){
-		fsm_checkForNewOrders();
+		fsm_update();
 		if(elev_get_floor_sensor_signal() != previousFloorIndicator){
 			previousFloorIndicator = elev_get_floor_sensor_signal();
 			if(previousFloorIndicator != -1){
@@ -134,6 +134,7 @@ void fsm_init(bool skipStartup){
 		}
 		elev_set_motor_direction(DIRN_STOP);
 		previousFloorIndicator = elev_get_floor_sensor_signal();
+		elev_set_floor_indicator(previousFloorIndicator);
 	}
 	
 	e.floor = previousFloorIndicator;

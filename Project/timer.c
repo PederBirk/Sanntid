@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 
-//Borrowed almost verbatim from previous project
+//"Borrowed" almost verbatim from elev_algo
 
 double timer_getTime(void){
     struct timeval time;

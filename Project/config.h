@@ -10,7 +10,7 @@
 //Network constants, keywords must be int between -128 and 127
 #define CLEAR_FLOOR_KEYWORD 100
 #define REQUEST_COST_KEYWORD 101
-#define RECIEVE_COST_KEYWORD 102
+#define RECEIVE_COST_KEYWORD 102
 #define DELEGATE_ORDER_KEYWORD 103
 #define PORT 2456
 
