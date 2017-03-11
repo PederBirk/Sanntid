@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 PendingCosts * first;
+pthread_mutex_t costMutex = PTHREAD_MUTEX_INITIALIZER;
 
 void cost_newOrder(ButtonPress b){
 	PendingCosts *p = malloc(sizeof(PendingCosts));
@@ -28,9 +29,11 @@ void cost_handleCost(int cost, ButtonPress b, const char * ip){
 	PendingCosts *p = first;
 	while(p != NULL){
 		if(p->b == b){
-			p->costs[p->index].cost = cost; //Probably want a semaphore or something here
+			pthread_mutex_lock(&costMutex);
+			p->costs[p->index].cost = cost;
 			p->costs[p->index].ip = ip;
 			p->index++;
+			pthread_mutex_unlock(&costMutex);
 		}
 		p = p->next;
 	}
