@@ -1,6 +1,6 @@
 typedef struct{
 	int cost;
-	char * ip;
+	const char * ip;
 } CostIp;
 
 typedef struct{

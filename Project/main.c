@@ -8,7 +8,7 @@
 #include "network.h"
 #include <stdio.h>
 
-const char *ips[N_ELEVATORS - 1] = {"127.0.0.1"};
+const char *ips[N_ELEVATORS - 1] = {"129.241.187.146"};
 
 void main_shareOrder(ButtonPress b){
 	cost_newOrder(b);

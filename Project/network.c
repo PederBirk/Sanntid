@@ -5,11 +5,11 @@
 #include "costFunction.h"
 #include "sverresnetwork.h"
 #include "main.h"
-
+//make din dritt
 
 void udpListener(const char * ip, char * data, int dataLength){
-	printf("udp fått inn noe\n");
 	int keyword = (int)data[0];
+	printf("udp fått inn noe: %i\n", keyword);
 	if(keyword == CLEAR_FLOOR_KEYWORD){
 		main_clearOrders(data[1], false);
 	}

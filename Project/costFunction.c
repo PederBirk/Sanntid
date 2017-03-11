@@ -7,8 +7,12 @@
 #include "orders.h"
 #include <unistd.h>
 #include <pthread.h>
+#include <stdlib.h>
+#include <stdio.h>
 
-static PendingCosts pending[N_FLOORS][N_BUTTONS - 1];
+//make ffs
+
+static PendingCosts **pending;
 
 void cost_newOrder(ButtonPress b){ //add safety here?
 	PendingCosts p;
@@ -55,6 +59,7 @@ void *checkCostTimeout(){
 					b.floor = floor;
 					b.button = button;
 					if(ip != 0){
+						printf("hallo\n");
 						network_sendDelegateOrder(b, ip);
 						clearPendingCosts(b);
 					}
@@ -70,6 +75,14 @@ void *checkCostTimeout(){
 }
 
 void cost_init(){
+	PendingCosts **p = malloc(sizeof *p * N_FLOORS);
+	if(!p){
+		printf("malloc error\n");
+	}
+	for(int i = 0; i < N_FLOORS; i++){
+		p[i] = malloc(sizeof (*p[i]) * N_BUTTONS - 1);
+	}
+	pending = p;
 	for(int floor = 0; floor < N_FLOORS - 1; floor++){
 		for(int button = 0; button < N_BUTTONS; button++){
 			ButtonPress b;
