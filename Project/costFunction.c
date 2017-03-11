@@ -59,7 +59,6 @@ void *checkCostTimeout(){
 					b.floor = floor;
 					b.button = button;
 					if(ip != 0){
-						printf("hallo\n");
 						network_sendDelegateOrder(b, ip);
 						clearPendingCosts(b);
 					}
@@ -70,7 +69,7 @@ void *checkCostTimeout(){
 				}
 			}
 		}
-		sleep(CHECK_FOR_COST_TIMEOUT_INTERVAL);	
+		usleep(CHECK_FOR_COST_TIMEOUT_INTERVAL * 1000);	
 	}
 }
 

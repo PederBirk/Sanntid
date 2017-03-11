@@ -21,8 +21,8 @@ void fsm_timeOut(){
 			e.state = IDLE;
 			break;
 		}
-		e.state = MOVING;
 		elev_set_motor_direction(e.dir);
+		e.state = MOVING;
 		break;
 	
 	default:
@@ -45,8 +45,14 @@ void fsm_checkForNewOrders(){
 			}
 			break;
 		}
-		e.state = MOVING;
 		elev_set_motor_direction(e.dir);
+		e.state = MOVING;
+		break;
+	
+	case MOVING:
+		if(e.dir == DIRN_STOP){ //This should seriously never happen, but it does :/ This fixes it though :)
+			e.state = IDLE;
+		}
 		break;
 	
 	default:
