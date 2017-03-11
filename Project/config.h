@@ -1,20 +1,30 @@
-#define BUTTONS_LISTENER_INTERVAL 50
+#pragma once
 
+/**** ELEVATOR CONFIGURATION ****/
+
+//Elevator constants
+#define N_FLOORS 4
+#define N_BUTTONS 3
+#define N_ELEVATORS 2
+
+//Network constants, keywords must be int between -128 and 127
 #define CLEAR_FLOOR_KEYWORD 100
 #define REQUEST_COST_KEYWORD 101
 #define RECIEVE_COST_KEYWORD 102
 #define DELEGATE_ORDER_KEYWORD 103
 #define PORT 2456
 
-#define COST_TIMEOUT 0.1
-#define CHECK_FOR_COST_TIMEOUT_INTERVAL 20
+//Buttons config
+#define BUTTONS_LISTENER_INTERVAL 50 //in ms
 
-#define CHECK_FOR_ORDER_TIMEOUT_INTERVAL 2
-#define ORDER_TIMEOUT 5
+//CostFunction config
+#define COST_TIMEOUT 0.1 //in s
+#define CHECK_FOR_COST_TIMEOUT_INTERVAL 20 //in ms
 
-#define OPEN_DOOR_DURATION 3
-#define FSM_EVENT_LISTENER_INTERVAL 50
+//Orders config
+#define ORDER_TIMEOUT 20 //in s
+#define CHECK_FOR_ORDER_TIMEOUT_INTERVAL 2 //in s
 
-#define N_FLOORS 4
-#define N_BUTTONS 3
-#define N_ELEVATORS 2
+//fsm config
+#define OPEN_DOOR_DURATION 3 //in s
+#define FSM_EVENT_LISTENER_INTERVAL 50 //in ms
