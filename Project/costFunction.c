@@ -10,86 +10,82 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//make ffs
+PendingCosts * first;
 
-static PendingCosts **pending;
-
-void cost_newOrder(ButtonPress b){ //add safety here?
-	PendingCosts p;
-	p.timeOut = timer_getTime() + COST_TIMEOUT;
-	(p.costs[0]).cost = orders_calculateCost(b);
-	(p.costs[0]).ip = 0;
-	p.index = 1;
-	pending[b.floor][b.button] = p;
+void cost_newOrder(ButtonPress b){
+	PendingCosts *p = malloc(sizeof(PendingCosts));
+	p->timeOut = timer_getTime() + COST_TIMEOUT;
+	(p->costs[0]).cost = orders_calculateCost(b);
+	(p->costs[0]).ip = 0;
+	p->index = 1;
+	p->b = b;
+	p->next = first;
+	first = p
 }
+
 
 void cost_handleCost(int cost, ButtonPress b, const char * ip){
-	if((pending[b.floor][b.button]).timeOut != 0){
-		(pending[b.floor][b.button]).costs[(pending[b.floor][b.button]).index].cost = cost;
-		(pending[b.floor][b.button]).costs[(pending[b.floor][b.button]).index].ip = ip;
-		(pending[b.floor][b.button]).index++;
-	}
-}
-
-void clearPendingCosts(ButtonPress b){
-	pending[b.floor][b.button].timeOut = 0;
-	pending[b.floor][b.button].index = 0;
-	for(int i = 0; i < N_ELEVATORS; i++){
-		pending[b.floor][b.button].costs[i].cost = 0;
-		pending[b.floor][b.button].costs[i].ip = 0;
+	PendingCosts *p = first;
+	while(p != NULL){
+		if(p->b == b){
+			p->costs[p->index].cost = cost; //Probably want a semaphore or something here
+			p->costs[p->index].ip = ip;
+			p->index++;
+		}
+		p = p->next;
 	}
 }
 
 void *checkCostTimeout(){
 	while(true){
 		double currentTime = timer_getTime(); //assume time remains constant through running of function, even though it might not :s
-		for(int floor = 0; floor < N_FLOORS; floor++){
-			for(int button = 0; button < N_BUTTONS - 1; button++){
-				PendingCosts p = (pending[floor][button]);
-				if(p.timeOut != 0 && p.timeOut < currentTime){
-					int lowestCost = p.costs[0].cost;
-					char * ip = 0;
-					for(int i = 1; i < N_ELEVATORS; i++){
-						if(p.costs[i].cost < lowestCost){
-							lowestCost = p.costs[i].cost;
-							ip = p.costs[i].ip;
-						}
+		PendingCosts *p = first;
+		while(p != NULL){
+			if(p->timeOut < currentTime){
+				int lowestCost = p->costs[0].cost;
+				char * returnIp = 0;
+				for(int i = 1; i < N_ELEVATORS; i++){
+					if(p->costs[i].cost < lowestCost){
+						lowestCost = p->costs[i].cost;
+						returnIp = p->costs[i].ip;
 					}
-					ButtonPress b;
-					b.floor = floor;
-					b.button = button;
-					if(ip != 0){
-						network_sendDelegateOrder(b, ip);
-						clearPendingCosts(b);
-					}
-					else{
-						main_handleOrder(b, LOCAL);
-						clearPendingCosts(b);
-					}
+				}
+				if(returnIp != 0){
+					network_sendDelegateOrder(p->b, returnIp);
+					clearPendingCosts(p->b);
+				}
+				else{
+					main_handleOrder(p->b, LOCAL);
+					clearPendingCosts(p->b);
 				}
 			}
 		}
-		usleep(CHECK_FOR_COST_TIMEOUT_INTERVAL * 1000);	
+		usleep(CHECK_FOR_COST_TIMEOUT_INTERVAL * 1000);
+	}
+}
+
+void clearPendingCosts(ButtonPress b){
+	PendingCosts *p = first;
+	PendingCosts *prev = NULL;
+	while(p != NULL){
+		if(p->b == b){
+			if(prev == NULL){
+				first = NULL;
+				free(p);
+			}
+			else{
+				prev->next = p->next;
+				free(p);
+			}
+			break;
+		}
+		prev = p;
+		p = p->next;
 	}
 }
 
 void cost_init(){
-	PendingCosts **p = malloc(sizeof *p * N_FLOORS);
-	if(!p){
-		printf("malloc error\n");
-	}
-	for(int i = 0; i < N_FLOORS; i++){
-		p[i] = malloc(sizeof (*p[i]) * N_BUTTONS - 1);
-	}
-	pending = p;
-	for(int floor = 0; floor < N_FLOORS - 1; floor++){
-		for(int button = 0; button < N_BUTTONS; button++){
-			ButtonPress b;
-			b.floor = floor;
-			b.button = button;
-			clearPendingCosts(b);
-		}
-	}
+	first = NULL;
 	pthread_t checkCostTimeoutThread;
 	pthread_create(&checkCostTimeoutThread, NULL, checkCostTimeout, NULL);
 }
