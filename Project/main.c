@@ -33,14 +33,21 @@ void main_handleOrder(ButtonPress b, OrderState state){
 	orders_addOrder(b, state);
 }
 
-void main_clearOrders(int floor, bool broadCast){
-	orders_clearOrders(floor);
-	if(broadCast){
+void main_clearOrders(int floor, bool fromNetwork){
+	if(!fromNetwork){
+		orders_clearOrders(floor, true);
 		network_sendClearFloor(floor);
+		for (int button = 0; button < N_BUTTONS; button++){
+			elev_set_button_lamp(button, floor, false);
+		}
 	}
-	for (int button = 0; button < N_BUTTONS; button++){
-		elev_set_button_lamp(button, floor, false);
+	else{
+		orders_clearOrders(floor, false);
+		for (int button = 0; button < N_BUTTONS - 1; button++){
+			elev_set_button_lamp(button, floor, false);
+		}
 	}
+	
 }
 
 int main(){
@@ -52,7 +59,6 @@ int main(){
 	buttons_init(); //Order matters here: Make sure buttons is last
 	printf("init over\n");
 	while (true){
-		//aint doin shiet;
 		if(elev_get_stop_signal()){
 			printf("Stop button pressed, stopping program\n");
 			break;

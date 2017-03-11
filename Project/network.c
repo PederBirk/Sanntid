@@ -5,12 +5,11 @@
 #include "costFunction.h"
 #include "sverresnetwork.h"
 #include "main.h"
-//make din dritt
 
 void udpListener(const char * ip, char * data, int dataLength){
 	int keyword = (int)data[0];
 	if(keyword == CLEAR_FLOOR_KEYWORD){
-		main_clearOrders(data[1], false);
+		main_clearOrders(data[1], true);
 	}
 	if(keyword == REQUEST_COST_KEYWORD){
 		ButtonPress b;

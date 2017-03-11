@@ -40,7 +40,7 @@ void fsm_checkForNewOrders(){
 				elev_set_motor_direction(e.dir);
 				elev_set_door_open_lamp(true);
 				timer_start(OPEN_DOOR_DURATION);
-				main_clearOrders(e.floor, true);
+				main_clearOrders(e.floor, false);
 				e.state = DOOR_OPEN;
 			}
 			break;
@@ -51,6 +51,7 @@ void fsm_checkForNewOrders(){
 	
 	case MOVING:
 		if(e.dir == DIRN_STOP){ //This should seriously never happen, but it does :/ This fixes it though :)
+			printf("Think I fixed this bug. If this shows up, I didn't\n");	
 			e.state = IDLE;
 		}
 		break;
@@ -71,7 +72,7 @@ void fsm_arrivalAtFloor(int floor){
 			if(orders_orderOnFloor(e.floor)){
 				elev_set_door_open_lamp(true);
 				timer_start(OPEN_DOOR_DURATION);
-				main_clearOrders(floor, true);
+				main_clearOrders(floor, false);
 				e.state = DOOR_OPEN;
 			}
 			break;
