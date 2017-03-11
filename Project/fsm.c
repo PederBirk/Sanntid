@@ -6,8 +6,8 @@
 #include "orders.h"
 #include "main.h"
 #include "fsm.h"
-#define OPEN_DOOR_DURATION 3
-#define FSM_EVENT_LISTENER_INTERVAL 50
+#include "config.h"
+
 
 static int previousFloorIndicator;
 static elevator e;
@@ -40,7 +40,7 @@ void fsm_checkForNewOrders(){
 				elev_set_motor_direction(e.dir);
 				elev_set_door_open_lamp(true);
 				timer_start(OPEN_DOOR_DURATION);
-				main_clearOrders(e.floor);
+				main_clearOrders(e.floor, true);
 				e.state = DOOR_OPEN;
 			}
 			break;
@@ -65,7 +65,7 @@ void fsm_arrivalAtFloor(int floor){
 			if(orders_orderOnFloor(e.floor)){
 				elev_set_door_open_lamp(true);
 				timer_start(OPEN_DOOR_DURATION);
-				main_clearOrders(floor);
+				main_clearOrders(floor, true);
 				e.state = DOOR_OPEN;
 			}
 			break;

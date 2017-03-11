@@ -22,9 +22,6 @@ void *buttonListener(){
 	while(true){
 		for(int floor = 0; floor < N_FLOORS; floor++){
 			for(int button = 0; button < N_BUTTONS; button++){
-				if(elev_get_button_signal(button, floor)){
-					printf("noe\n");
-				}
 				if(readButton(floor, button)){
 					ButtonPress b;
 					b.floor = floor;

@@ -8,7 +8,7 @@
 #include "network.h"
 #include <stdio.h>
 
-const char *ips[N_ELEVATORS -1] = {"ip1", "ip2"};
+const char *ips[N_ELEVATORS - 1] = {"127.0.0.1"};
 
 void main_shareOrder(ButtonPress b){
 	cost_newOrder(b);
@@ -19,10 +19,11 @@ void main_shareOrder(ButtonPress b){
 
 void main_handleOrder(ButtonPress b, OrderState state){
 	if(b.button == BUTTON_COMMAND){
+		elev_set_button_lamp(b.button, b.floor, true);
 		orders_addOrder(b, LOCAL);
 		return;
 	}
-	if(sate == NONE){
+	if(state == NONE){
 		elev_set_button_lamp(b.button, b.floor, true);
 		if(orders_addOrder(b, GLOBAL)){
 			main_shareOrder(b);
@@ -32,8 +33,11 @@ void main_handleOrder(ButtonPress b, OrderState state){
 	orders_addOrder(b, state);
 }
 
-void main_clearOrders(int floor){
+void main_clearOrders(int floor, bool broadCast){
 	orders_clearOrders(floor);
+	if(broadCast){
+		network_sendClearFloor(floor);
+	}
 	for (int button = 0; button < N_BUTTONS; button++){
 		elev_set_button_lamp(button, floor, false);
 	}

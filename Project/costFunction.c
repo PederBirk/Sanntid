@@ -8,10 +8,6 @@
 #include <unistd.h>
 #include <pthread.h>
 
-
-
-
-
 static PendingCosts pending[N_FLOORS][N_BUTTONS - 1];
 
 void cost_newOrder(ButtonPress b){ //add safety here?
@@ -60,11 +56,12 @@ void *checkCostTimeout(){
 					b.button = button;
 					if(ip != 0){
 						network_sendDelegateOrder(b, ip);
+						clearPendingCosts(b);
 					}
 					else{
 						main_handleOrder(b, LOCAL);
+						clearPendingCosts(b);
 					}
-
 				}
 			}
 		}

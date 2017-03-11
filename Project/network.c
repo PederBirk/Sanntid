@@ -8,9 +8,10 @@
 
 
 void udpListener(const char * ip, char * data, int dataLength){
+	printf("udp fått inn noe\n");
 	int keyword = (int)data[0];
 	if(keyword == CLEAR_FLOOR_KEYWORD){
-		main_clearOrders(data[1]);
+		main_clearOrders(data[1], false);
 	}
 	if(keyword == REQUEST_COST_KEYWORD){
 		ButtonPress b;
@@ -64,4 +65,4 @@ void network_sendRequestCost(ButtonPress b, char * ip){
 
 void network_init(){
 	udp_startReceiving(PORT, udpListener);
-}// kaka
+}
