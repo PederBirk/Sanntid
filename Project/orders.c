@@ -54,8 +54,8 @@ static void clearOrder(int floor, ButtonType button){
 	(orders[floor][button]).timeOut = 0;
 }
 
-void orders_clearOrders(int floor){ //assuming we always clear all orders on a floor
-	for (int button = 0; button < N_BUTTONS; button++){
+void orders_clearOrders(int floor, bool clearCommand){
+	for (int button = 0; button < N_BUTTONS - (!clearCommand); button++){
 		clearOrder(floor, button);
 	}
 }
@@ -63,7 +63,7 @@ void orders_clearOrders(int floor){ //assuming we always clear all orders on a f
 bool ordersInDirection(MotorDir dir, int floor){
 	switch(dir){
 	case DIRN_STOP:
-		return false; //Not sure what to do about this case
+		return orders_orderOnFloor(floor); //Not sure what to do about this case
 	
 	case DIRN_UP:
 		for(int i = floor + 1; i < N_FLOORS; i++){

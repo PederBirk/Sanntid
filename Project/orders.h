@@ -2,7 +2,7 @@
 
 bool orders_orderOnFloor(int floor);
 bool orders_addOrder(ButtonPress b, OrderState state);
-void orders_clearOrders(int floor);
+void orders_clearOrders(int floor, bool clearInternal);
 void orders_init();
 bool orders_shouldStop(MotorDir dir, int floor);
 MotorDir orders_getDirection();
