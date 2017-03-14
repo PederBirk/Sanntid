@@ -33,7 +33,6 @@ void cost_newOrder(ButtonPress b){
 
 void cost_handleCost(int cost, ButtonPress b, int ip){
 	PendingCosts *p = first;
-	printf("cost mottat: %i\n", cost);
 	while(p != NULL){
 		if(compareButtonPress(p->b ,b)){
 			pthread_mutex_lock(&costMutex);
