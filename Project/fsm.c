@@ -67,13 +67,17 @@ void fsm_arrivalAtFloor(int floor){
 	switch(e.state){
 	case MOVING:
 		if(orders_shouldStop(e.dir, e.floor)){
-			e.dir = DIRN_STOP;
-			elev_set_motor_direction(e.dir);
 			if(orders_orderOnFloor(e.floor)){
+				elev_set_motor_direction(DIRN_STOP);
 				elev_set_door_open_lamp(true);
 				timer_start(OPEN_DOOR_DURATION);
 				main_clearOrders(floor, false);
 				e.state = DOOR_OPEN;
+			}
+			else{
+				e.dir = DIRN_STOP;
+				elev_set_motor_direction(e.dir);
+				e.state = IDLE;
 			}
 			break;
 		}

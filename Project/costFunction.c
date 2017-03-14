@@ -20,7 +20,10 @@ void cost_newOrder(ButtonPress b){
 	PendingCosts *p = malloc(sizeof(PendingCosts));
 	p->timeOut = timer_getTime() + COST_TIMEOUT;
 	(p->costs[0]).cost = orders_calculateCost(b);
-	(p->costs[0]).ip = 0;
+	for(int i = 1; i < N_ELEVATORS; i++){
+		p->costs[i].cost = 255;
+	}
+	(p->costs[0]).ip = -1;
 	p->index = 1;
 	p->b = b;
 	p->next = first;
@@ -30,6 +33,7 @@ void cost_newOrder(ButtonPress b){
 
 void cost_handleCost(int cost, ButtonPress b, int ip){
 	PendingCosts *p = first;
+	printf("cost mottat: %i\n", cost);
 	while(p != NULL){
 		if(compareButtonPress(p->b ,b)){
 			pthread_mutex_lock(&costMutex);
@@ -85,6 +89,7 @@ void *checkCostTimeout(){
 					clearPendingCosts(p->b);
 				}
 			}
+			p = p->next;
 		}
 		usleep(CHECK_FOR_COST_TIMEOUT_INTERVAL * 1000);
 	}

@@ -11,7 +11,7 @@
 const char *ips[N_ELEVATORS - 1] = {"129.241.187.154"};
 
 const char * getIp(int index){
-	if(index >= 0 && index < N_ELEVATORS - 2){
+	if(index >= 0 && index <= N_ELEVATORS - 2){
 		return ips[index];
 	}
 	return -1;
@@ -34,7 +34,7 @@ void udpListener(const char * ip, char * data, int dataLength){
 	switch(keyword){
 	case CLEAR_FLOOR_KEYWORD:
 		if(ipIndex == -1){
-			printf("Ip error: CLEAR_FLOOR");
+			printf("Ip error: CLEAR_FLOOR\n");
 			return;
 		}
 		main_clearOrders(data[1], true);
@@ -42,7 +42,7 @@ void udpListener(const char * ip, char * data, int dataLength){
 	
 	case REQUEST_COST_KEYWORD:
 		if(ipIndex == -1){
-			printf("Ip error: REQUEST_COST");
+			printf("Ip error: REQUEST_COST\n");
 			return;
 		}
 		b.floor = data[1];
@@ -53,7 +53,7 @@ void udpListener(const char * ip, char * data, int dataLength){
 	
 	case DELEGATE_ORDER_KEYWORD:
 		if(ipIndex == -1){
-			printf("Ip error: DELEGATE_ORDER");
+			printf("Ip error: DELEGATE_ORDER\n");
 			return;
 		}
 		b.floor = data[1];
@@ -63,7 +63,7 @@ void udpListener(const char * ip, char * data, int dataLength){
 	
 	case RECEIVE_COST_KEYWORD:
 		if(ipIndex == -1){
-			printf("Ip error: RECEIVE_COST");
+			printf("Ip error: RECEIVE_COST\n");
 			return;
 		}
 		b.floor = data[2];
@@ -105,7 +105,6 @@ void network_sendRequestCost(ButtonPress b){
 	for(int i = 0; i < N_ELEVATORS - 1; i++){
 		udp_send(getIp(i), PORT, data, 3);
 	}
-	
 }
 
 void network_init(){

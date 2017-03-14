@@ -2,10 +2,12 @@
 // These functions provide an interface to the elevators in the real time lab
 #pragma once
 
-// Number of floors. Hardware-dependent, do not modify.
+typedef enum {
+    ET_Comedi,
+    ET_Simulation
+} elev_type;
 
-
-void elev_init(void);
+void elev_init(elev_type e);
 
 void elev_set_motor_direction(MotorDir dirn);
 void elev_set_button_lamp(ButtonType button, int floor, int value);

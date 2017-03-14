@@ -43,7 +43,8 @@ void main_clearOrders(int floor, bool fromNetwork){
 }
 
 int main(){
-	elev_init();
+	elev_type e = ET_Simulation;
+	elev_init(e);
 	fsm_init(true);
 	orders_init();
 	cost_init();
