@@ -8,9 +8,13 @@
 #include <string.h>
 #include <stdio.h>
 
-const char *ips[N_ELEVATORS - 1] = {"129.241.187.154"};
+const char *ips[N_ELEVATORS - 1] = {"129.241.187.158"}; //Put ip of elevators other than this here NB: remember to update N_ELEVATORS!
+const char *myIp = ""; //Put ip address of THIS elevator here
 
 const char * getIp(int index){
+	if(index == -2){
+	    return myIp;
+	}
 	if(index >= 0 && index <= N_ELEVATORS - 2){
 		return ips[index];
 	}
@@ -22,6 +26,9 @@ int getIpIndex(const char * ip){
 		if(!strcmp(ip, ips[index])){
 			return index;
 		}
+	}
+	if(!strcmp(ip, myIp)){
+	    return -2;
 	}
 	return -1;
 }
