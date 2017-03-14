@@ -4,12 +4,12 @@ typedef struct{
 	int ip;
 } CostIp;
 
-typedef struct{
+typedef struct pending{
 	double timeOut;
 	CostIp costs[N_ELEVATORS];
 	int index;
 	ButtonPress b;
-	PendingCosts *next;
+	struct pending * next;
 } PendingCosts;
 
 void cost_handleCost(int cost, ButtonPress b,int ip);

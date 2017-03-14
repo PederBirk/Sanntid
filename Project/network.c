@@ -5,6 +5,8 @@
 #include "costFunction.h"
 #include "sverresnetwork.h"
 #include "main.h"
+#include <string.h>
+#include <stdio.h>
 
 const char *ips[N_ELEVATORS - 1] = {"129.241.187.154"};
 
@@ -16,7 +18,7 @@ const char * getIp(int index){
 }
 
 int getIpIndex(const char * ip){
-	for(int index = 0; index < N_ELEVATORS - 1; i++){
+	for(int index = 0; index < N_ELEVATORS - 1; index++){
 		if(!strcmp(ip, ips[index])){
 			return index;
 		}
@@ -26,49 +28,48 @@ int getIpIndex(const char * ip){
 
 void udpListener(const char * ip, char * data, int dataLength){
 	int keyword = (int)data[0];
+	int ipIndex = getIpIndex(ip);
+	ButtonPress b;
 	
-	switch keyword{
+	switch(keyword){
 	case CLEAR_FLOOR_KEYWORD:
-		ipIndex = getIpIndex(ip);
 		if(ipIndex == -1){
 			printf("Ip error: CLEAR_FLOOR");
 			return;
 		}
 		main_clearOrders(data[1], true);
+		break;
 	
 	case REQUEST_COST_KEYWORD:
-		ipIndex = getIpIndex(ip);
 		if(ipIndex == -1){
 			printf("Ip error: REQUEST_COST");
 			return;
 		}
-		ButtonPress b;
 		b.floor = data[1];
 		b.button = data[2];
 		main_handleOrder(b, GLOBAL);
 		network_sendCost(orders_calculateCost(b), b ,ipIndex);
+		break;
 	
 	case DELEGATE_ORDER_KEYWORD:
-		ipIndex = getIpIndex(ip);
 		if(ipIndex == -1){
 			printf("Ip error: DELEGATE_ORDER");
 			return;
 		}
-		ButtonPress b;
 		b.floor = data[1];
 		b.button = data[2];
 		main_handleOrder(b, LOCAL);
+		break;
 	
-	case RECEIVE_COST_KEYWORD
-		ipIndex = getIpIndex(ip);
+	case RECEIVE_COST_KEYWORD:
 		if(ipIndex == -1){
 			printf("Ip error: RECEIVE_COST");
 			return;
 		}
-		ButtonPress b;
 		b.floor = data[2];
 		b.button = data[3];
-		cost_handleCost(data[1], b ,getIpIndex(ipIndex));
+		cost_handleCost(data[1], b, ipIndex);
+		break;
 	}	
 }
 

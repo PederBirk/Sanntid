@@ -24,20 +24,40 @@ void cost_newOrder(ButtonPress b){
 	p->index = 1;
 	p->b = b;
 	p->next = first;
-	first = p
+	first = p;
 }
 
 
 void cost_handleCost(int cost, ButtonPress b, int ip){
 	PendingCosts *p = first;
 	while(p != NULL){
-		if(p->b == b){
+		if(compareButtonPress(p->b ,b)){
 			pthread_mutex_lock(&costMutex);
 			p->costs[p->index].cost = cost;
 			p->costs[p->index].ip = ip;
 			p->index++;
 			pthread_mutex_unlock(&costMutex);
 		}
+		p = p->next;
+	}
+}
+
+void clearPendingCosts(ButtonPress b){
+	PendingCosts *p = first;
+	PendingCosts *prev = NULL;
+	while(p != NULL){
+		if(compareButtonPress(p->b, b)){
+			if(prev == NULL){
+				first = NULL;
+				free(p);
+			}
+			else{
+				prev->next = p->next;
+				free(p);
+			}
+			break;
+		}
+		prev = p;
 		p = p->next;
 	}
 }
@@ -70,25 +90,6 @@ void *checkCostTimeout(){
 	}
 }
 
-void clearPendingCosts(ButtonPress b){
-	PendingCosts *p = first;
-	PendingCosts *prev = NULL;
-	while(p != NULL){
-		if(p->b == b){
-			if(prev == NULL){
-				first = NULL;
-				free(p);
-			}
-			else{
-				prev->next = p->next;
-				free(p);
-			}
-			break;
-		}
-		prev = p;
-		p = p->next;
-	}
-}
 
 void cost_init(){
 	first = NULL;

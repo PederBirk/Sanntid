@@ -29,3 +29,4 @@ typedef enum tag_elev_motor_direction {
     DIRN_UP = 1
 } MotorDir;
 
+bool compareButtonPress(ButtonPress a, ButtonPress b);
