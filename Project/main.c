@@ -23,6 +23,7 @@ void main_handleOrder(ButtonPress b, OrderState state){
 		return;
 	}
 	orders_addOrder(b, state);
+	elev_set_button_lamp(b.button, b.floor, true);
 }
 
 void main_clearOrders(int floor, bool fromNetwork){
@@ -43,18 +44,15 @@ void main_clearOrders(int floor, bool fromNetwork){
 }
 
 int main(){
-	elev_type e = ET_Simulation;
+	elev_type e = ET_Comedi;
 	elev_init(e);
-	fsm_init(true);
+	fsm_init(false);
 	orders_init();
 	cost_init();
 	network_init();
 	buttons_init(); //Order matters here: Make sure buttons is last
 	printf("init over\n");
 	while (true){
-		if(elev_get_stop_signal()){
-			printf("Stop button pressed, stopping program\n");
-			break;
-		}
+		//noffin
 	}
 }

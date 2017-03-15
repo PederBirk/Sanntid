@@ -5,7 +5,7 @@
 //Elevator constants
 #define N_FLOORS 4
 #define N_BUTTONS 3
-#define N_ELEVATORS 2
+#define N_ELEVATORS 3
 
 //Network constants, keywords must be int between -128 and 127
 #define CLEAR_FLOOR_KEYWORD 100
